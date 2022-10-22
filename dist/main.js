@@ -1,0 +1,1 @@
+(()=>{var e;document.body.appendChild(((e=document.createElement("div")).textContent="Hello webpack use TypeScript",e))})();

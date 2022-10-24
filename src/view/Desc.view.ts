@@ -24,7 +24,7 @@ const ValueDescEll = (content: string, className?: string) => {
 }
 
 function DescriptionEll(title: HTMLHeadingElement, value: HTMLParagraphElement) {
-    const div = document.createElement("description");
+    const div = document.createElement("article");
     div.appendChild(title);
     div.appendChild(value);
     return div;

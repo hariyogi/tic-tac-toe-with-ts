@@ -1,10 +1,11 @@
 
-function createMethodButton(content: string, id: string, onClick: () => void) {
-    const methodButton = document.createElement("button");
-    methodButton.id = id;
-    methodButton.textContent = content;
-    methodButton.addEventListener("click", () => onClick());
-    return methodButton;
+function createButton(content: string, id: string, onClick: () => void) {
+    const button = document.createElement("button");
+    button.id = id;
+    button.textContent = content;
+    button.type = "button";
+    button.addEventListener("click", () => onClick());
+    return button;
 }
 
 function createNameInput(label: string, id: string, onChange: (value: string) => void) {
@@ -38,13 +39,13 @@ export function chosseGameMethod (
     title.textContent = "Pilih mode permainan";
     title.classList.add("title");
 
-    const playerVsPlayer = createMethodButton(
+    const playerVsPlayer = createButton(
         "Player vs Player",
         "pvp",
         () => callBack("PLAYER")
     );
 
-    const playerVsBot = createMethodButton(
+    const playerVsBot = createButton(
         "Player vs Bot",
         "com",
         () => callBack("BOT")
@@ -96,16 +97,18 @@ export function chossePlayerName(
         container.appendChild(player2);
     }
 
-    const nextButton = document.createElement("button");
-    nextButton.addEventListener("click", () => callBack(player1Name, player2Name));
-    nextButton.textContent = "Lanjut";
-    nextButton.type = "button";
+    const nextButton = createButton(
+        "Lanjut", 
+        "lanjut", 
+        () => callBack(player1Name, player2Name)
+    );
 
-    const backButton = document.createElement("button");
-    backButton.addEventListener("click", () => onBack());
+    const backButton = createButton(
+        "Kembali", 
+        "kembali", 
+        () => onBack()
+    );
     backButton.classList.add("back-btn");
-    backButton.textContent = "Kembali";
-    backButton.type = "button";
 
     container.appendChild(nextButton);
     container.appendChild(backButton);

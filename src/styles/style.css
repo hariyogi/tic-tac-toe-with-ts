@@ -12,7 +12,8 @@
 
 body,
 h1,
-h2 {
+h2,
+p {
     margin: 0;
     padding: 0;
 }
@@ -118,4 +119,56 @@ button.back-btn:active {
     display: flex;
     flex-direction: column;
     row-gap: 16px;
+}
+
+/* Board Game */
+
+.board-game {
+    display: flex;
+    width: calc(80px * 3);
+    height: calc(80px * 3);
+    flex-wrap: wrap;
+}
+
+.board-cell {
+    border: 1px solid grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.board-cell:nth-child(1) {
+    border-top-left-radius: 10px;
+}
+
+.board-cell:nth-child(3) {
+    border-top-right-radius: 10px;
+}
+
+.board-cell:nth-child(7) {
+    border-bottom-left-radius: 10px;
+}
+
+.board-cell:nth-child(9) {
+    border-bottom-right-radius: 10px;
+}
+
+/* Score */
+
+.score-board-cont {
+    padding: 8px 0 18px 0;
+}
+
+.score-cont {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.score-name {
+	margin-bottom: 16px;
+	font-weight: bold;
+	text-transform: uppercase;
 }

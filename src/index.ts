@@ -4,6 +4,7 @@ import { chosseGameMethod, chossePlayerName } from "./view/StartGame.view";
 import Board from "./view/Board.view";
 import Player from "./Player";
 import ScoreBoard from "./view/Scoreboard.view";
+import BuildGame, { initGame } from "./logic/Game.logic";
 import "./styles/style.css"
 
 const body = document.body;
@@ -35,7 +36,8 @@ function chosePlayerNameEll(method: "PLAYER" | "BOT") {
     replaceBody(chossePlayerName(method, (p1: string, p2: string) => {
         const player1 = Player(p1, "O");
         const player2 = Player(p2, "X");
-        replaceBody(createGameBoard(player1, player2));
+        initGame(player1, player2);
+        replaceBody(BuildGame());
     }, () => setGameMethod()));
 }
 

@@ -21,8 +21,8 @@ interface boardGameArgs {
 }
 
 interface boardCallBackArgs {
-    occupiedCell: number[],
-    cellIndex: number
+    cellIndex: number,
+    playerIndex: number
 }
 
 
@@ -45,16 +45,20 @@ function BoardCell(args: boardCellArgs) {
 function doWhenCellClick(index: number, callBack: boardCallBack) {
     if(!occupiedCell.includes(index)) {
         const tempPlayer = player[currPlayer];
-        currPlayer = currPlayer === 0 ? 1 : 0;
         occupiedCell.push(index);
         callBack({
             cellIndex: index,
-            occupiedCell: occupiedCell
+            playerIndex: currPlayer
         });
+        currPlayer = currPlayer === 0 ? 1 : 0;
         return tempPlayer.symbol;
     }else {
         return null;
     }
+}
+
+export function isBoardFull() {
+    return occupiedCell.length === 9;
 }
 
 
@@ -75,7 +79,6 @@ export default function Board(args: boardGameArgs) {
         }));
     }
 
-    console.log(cell);
     boardGame.append(...cell);
     return boardGame;
 }

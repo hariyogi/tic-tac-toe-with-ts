@@ -97,6 +97,7 @@ export function resetBoard() {
 }
 
 export function exitBoard() {
+    setBoardState(true);
     player.length = 0;
     currPlayer = 0;
     occupiedCell.length = 0;

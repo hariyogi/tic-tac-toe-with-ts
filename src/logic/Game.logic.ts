@@ -97,11 +97,9 @@ function resetGame() {
 
 function exitGame() {
     gameOver = false;
-    setBoardState(true);
     exitBoard();
     exitScore();
     player.length = 0;
-    div.remove();
 }
 
 function isPlayerWin(player: Player) {

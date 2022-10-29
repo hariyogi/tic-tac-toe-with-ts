@@ -43,13 +43,13 @@ button:active {
     transform: scale(0.9);
 }
 
-button.back-btn, 
+button.back-btn,
 .game-over-btn:last-child {
     border: 1px solid hsl(0, 64%, 54%);
     background-color: hsl(0, 64%, 54%);
 }
 
-button.back-btn:hover, 
+button.back-btn:hover,
 .game-over-btn:last-child:hover {
     background-color: white;
     color: black;
@@ -139,6 +139,14 @@ button.back-btn:active {
     align-items: center;
     font-size: 1.8rem;
     font-weight: bold;
+}
+
+.hint {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.board-cell:hover {
+    background-color: rgb(197, 197, 197);
 }
 
 .board-cell:nth-child(1) {

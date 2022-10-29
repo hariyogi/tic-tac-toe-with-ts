@@ -56,10 +56,27 @@ function BoardCell(args: boardCellArgs) {
             const symbol = args.onClick(args.callIndex);
             if (symbol !== null) {
                 const target = e.target as HTMLDivElement;
+                target.classList.remove("hint");
                 target.textContent = symbol;
             }
         }
     });
+    div.addEventListener("mouseover", (e) => {
+        if(!disableClick && !isCellOccupied(args.callIndex)) {
+            const target = e.target as HTMLDivElement;
+            target.classList.add("hint");
+            target.textContent = player[currPlayer].symbol;
+        }
+    })
+
+    div.addEventListener("mouseout", (e) => {
+        if(!disableClick && !isCellOccupied(args.callIndex)) {
+            const target = e.target as HTMLDivElement;
+            target.classList.remove("hint");
+            target.textContent = "";
+        }
+    })
+
     return div;
 }
 

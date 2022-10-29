@@ -100,6 +100,7 @@ export function exitBoard() {
     player.length = 0;
     currPlayer = 0;
     occupiedCell.length = 0;
+    cellElls.length = 0;
 }
 
 
@@ -116,6 +117,6 @@ export default function Board(args: boardGameArgs) {
         }));
     }
 
-    boardGame.append(...cellElls);
+    boardGame.replaceChildren(...cellElls);
     return boardGame;
 }

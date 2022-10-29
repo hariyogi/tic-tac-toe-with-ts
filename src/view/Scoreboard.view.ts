@@ -69,6 +69,7 @@ export function resetWhoIsWin() {
 
 export function exitScore() {
     ronde = 1;
+    whoIsWinEll.remove();
 }
 
 
@@ -78,6 +79,6 @@ export default function ScoreBoard(args: scoreBoardArgs) {
     container.appendChild(scoreContainer);
     const scoreP1 = buildScore(args.player1, 0);
     const scoreP2 = buildScore(args.player2, 1);
-    scoreContainer.append(scoreP1, scoreP2);
+    scoreContainer.replaceChildren(scoreP1, scoreP2);
     return container;
 }

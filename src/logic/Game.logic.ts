@@ -25,6 +25,7 @@ backToHomeBtn.textContent = "Kembali ke Menu Utama"
 backToHomeBtn.classList.add("game-over-btn");
 
 export function initGame(player1: Player, player2: Player) {
+    console.log(player);
     player[0] = player1;
     player[1] = player2;
     gameReady = true;
@@ -51,8 +52,7 @@ export default function BuildGame(backToHome: () => void) {
         backToHome();
     });
 
-    div.appendChild(scoreBoard);
-    div.appendChild(board);
+    div.replaceChildren(scoreBoard, board);
     return div;
 
 }

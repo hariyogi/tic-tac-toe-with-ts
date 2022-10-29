@@ -1,5 +1,5 @@
 import Player from "../Player";
-import Board, { isBoardFull, setBoardState, resetBoard, exitBoard } from "../view/Board.view";
+import Board, { isBoardFull, setBoardState, resetBoard, highlightCell } from "../view/Board.view";
 import ScoreBoard, {
     changeScore,
     appendRonde,
@@ -44,7 +44,7 @@ export default function BuildGame(backToHome: () => void) {
     const board = Board({
         player1: player[0],
         player2: player[1],
-        callBack: (args) => handleGame(args.cellIndex, args.playerIndex)
+        onCellClick: (args) => handleGame(args.cellIndex, args.playerIndex)
     });
 
     backToHomeBtn.addEventListener("click", () => {
@@ -60,10 +60,12 @@ export default function BuildGame(backToHome: () => void) {
 function handleGame(cellIndex: number, playerIndex: number) {
     const tempPlayer = player[playerIndex];
     tempPlayer.addingCellOccupied(cellIndex);
-    if (isPlayerWin(tempPlayer)) {
+    const playerWinIndex = isPlayerWin(tempPlayer);
+    console.log(playerWinIndex);
+    if (playerWinIndex.length !== 0) {
         gameOver = true;
         tempPlayer.score++;
-        console.log(tempPlayer.score);
+        highlightCell(...playerWinIndex);
         changeScore(tempPlayer.score, playerIndex);
         setWhoisWin(tempPlayer);
     } else if (isBoardFull()) {
@@ -97,19 +99,29 @@ function resetGame() {
 
 function exitGame() {
     gameOver = false;
-    exitBoard();
     exitScore();
     player.length = 0;
 }
 
 function isPlayerWin(player: Player) {
     const co = player.cellOccupied;
-    return (co.includes(0) && co.includes(1) && co.includes(2))
-        || (co.includes(3) && co.includes(4) && co.includes(5))
-        || (co.includes(6) && co.includes(7) && co.includes(8))
-        || (co.includes(0) && co.includes(4) && co.includes(8))
-        || (co.includes(2) && co.includes(4) && co.includes(6))
-        || (co.includes(1) && co.includes(4) && co.includes(7))
-        || (co.includes(0) && co.includes(3) && co.includes(6))
-        || (co.includes(2) && co.includes(5) && co.includes(8));
+    if ((co.includes(0) && co.includes(1) && co.includes(2))) {
+        return [0, 1, 2];
+    } else if ((co.includes(3) && co.includes(4) && co.includes(5))) {
+        return [3, 4, 5];
+    } else if ((co.includes(6) && co.includes(7) && co.includes(8))) {
+        return [6, 7, 8];
+    } else if ((co.includes(0) && co.includes(4) && co.includes(8))) {
+        return [0, 4, 8];
+    } else if ((co.includes(2) && co.includes(4) && co.includes(6))) {
+        return [2, 4, 6];
+    } else if ((co.includes(1) && co.includes(4) && co.includes(7))) {
+        return [1, 4, 7];
+    } else if ((co.includes(0) && co.includes(3) && co.includes(6))) {
+        return [0, 3, 6];
+    } else if ((co.includes(2) && co.includes(5) && co.includes(8))) {
+        return [2, 5, 8];
+    } else {
+        return [];
+    }
 }

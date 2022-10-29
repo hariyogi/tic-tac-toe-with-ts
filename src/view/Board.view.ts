@@ -23,7 +23,7 @@ interface boardCellArgs {
 interface boardGameArgs {
     player1: Player
     player2: Player,
-    callBack: boardCallBack
+    onCellClick: boardCallBack
 
 }
 
@@ -78,25 +78,10 @@ function doWhenCellClick(index: number, callBack: boardCallBack) {
     }
 }
 
-// Export Value
-
-export function isBoardFull() {
-    return occupiedCell.length === 9;
-}
-
-export function setBoardState(state: boolean) {
-    disableClick = !state;
-}
-
-export function resetBoard() {
-    occupiedCell.length = 0;
-    currPlayer = 0;
-    cellElls.forEach((el) => {
-        el.textContent = "";
-    });
-}
-
-export function exitBoard() {
+/**
+ * Buat baru boardnya
+ */
+ function recreate() {
     setBoardState(true);
     player.length = 0;
     currPlayer = 0;
@@ -104,8 +89,51 @@ export function exitBoard() {
     cellElls.length = 0;
 }
 
+// Export Value
 
+export function isBoardFull() {
+    return occupiedCell.length === 9;
+}
+
+/**
+ * Ketika state false maka board tidak dapat di klik / di disable
+ * @param state true untuk enable dan false untuk disable.
+ */
+export function setBoardState(state: boolean) {
+    disableClick = !state;
+}
+
+/**
+ * Reset semua board untuk lanjut bermain lagi.
+ */
+export function resetBoard() {
+    occupiedCell.length = 0;
+    currPlayer = 0;
+    cellElls.forEach((el) => {
+        el.textContent = "";
+        el.style.backgroundColor = "";
+        el.style.color = "";
+    });
+}
+
+export function highlightCell(...index: number[]) {
+    index.forEach(i => {
+        console.log(i);
+        const cell = cellElls[i];
+
+        if(cell != null) {
+            cell.style.backgroundColor = "#B3FFAE";
+        }
+    });
+}
+
+/**
+ * Membuat board baru untuk bermain game.
+ * @returns boardGame Element
+ */
 export default function Board(args: boardGameArgs) {
+    // Reset semua sebelum buat baru.
+    recreate();
     player[0] = args.player1;
     player[1] = args.player2;
     currPlayer = 0;
@@ -114,7 +142,7 @@ export default function Board(args: boardGameArgs) {
         cellElls.push(BoardCell({
             size: "80px",
             callIndex: i,
-            onClick: (index) => doWhenCellClick(index, args.callBack)
+            onClick: (index) => doWhenCellClick(index, args.onCellClick)
         }));
     }
 

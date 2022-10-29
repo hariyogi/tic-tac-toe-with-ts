@@ -18,9 +18,13 @@ function chosePlayerNameEll(method: "PLAYER" | "BOT") {
     replaceBody(chossePlayerName(method, (p1: string, p2: string) => {
         const player1 = Player(p1, "O");
         const player2 = Player(p2, "X");
-        initGame(player1, player2);
-        replaceBody(BuildGame(() => setGameMethod()));
+        playingTheGame(player1, player2);
     }, () => setGameMethod()));
+}
+
+function playingTheGame(player1: Player, player2: Player) {
+    initGame(player1, player2);
+    replaceBody(BuildGame(() => setGameMethod()));
 }
 
 setGameMethod();

@@ -1,6 +1,13 @@
 import Player from "../Player";
-import Board, { isBoardFull } from "../view/Board.view";
-import ScoreBoard, { changeScore } from "../view/Scoreboard.view";
+import Board, { isBoardFull, setBoardState, resetBoard, exitBoard } from "../view/Board.view";
+import ScoreBoard, {
+    changeScore,
+    appendRonde,
+    setWhoisWin,
+    setDraw,
+    resetWhoIsWin,
+    exitScore
+} from "../view/Scoreboard.view";
 
 const player: Player[] = [];
 let gameReady = false;
@@ -8,13 +15,22 @@ let gameOver = false;
 
 const div = document.createElement("div");
 
+const nextRoundBtn = document.createElement("button");
+nextRoundBtn.textContent = "Ronde Selanjutnya"
+nextRoundBtn.classList.add("game-over-btn");
+nextRoundBtn.addEventListener("click", () => resetGame());
+
+const backToHomeBtn = document.createElement("button");
+backToHomeBtn.textContent = "Kembali ke Menu Utama"
+backToHomeBtn.classList.add("game-over-btn");
+
 export function initGame(player1: Player, player2: Player) {
     player[0] = player1;
     player[1] = player2;
     gameReady = true;
 }
 
-export default function BuildGame() {
+export default function BuildGame(backToHome: () => void) {
     if (!gameReady) {
         throw "Need call initGame()";
     }
@@ -30,6 +46,11 @@ export default function BuildGame() {
         callBack: (args) => handleGame(args.cellIndex, args.playerIndex)
     });
 
+    backToHomeBtn.addEventListener("click", () => {
+        exitGame();
+        backToHome();
+    });
+
     div.appendChild(scoreBoard);
     div.appendChild(board);
     return div;
@@ -39,17 +60,48 @@ export default function BuildGame() {
 function handleGame(cellIndex: number, playerIndex: number) {
     const tempPlayer = player[playerIndex];
     tempPlayer.addingCellOccupied(cellIndex);
-    console.log(`${tempPlayer.cellOccupied} player ${playerIndex}`);
-    if(isPlayerWin(tempPlayer)) {
+    if (isPlayerWin(tempPlayer)) {
         gameOver = true;
         tempPlayer.score++;
         console.log(tempPlayer.score);
         changeScore(tempPlayer.score, playerIndex);
-        console.log(`Player ${tempPlayer.name} win`);
-    }else if(isBoardFull()) {
+        setWhoisWin(tempPlayer);
+    } else if (isBoardFull()) {
         gameOver = true;
-        console.log("draw");
+        appendRonde();
+        setDraw();
     }
+
+    if (gameOver) {
+        showGameOverButton();
+        setBoardState(false);
+    }
+}
+
+function showGameOverButton() {
+    div.appendChild(nextRoundBtn);
+    div.appendChild(backToHomeBtn);
+}
+
+function resetGame() {
+    appendRonde();
+    gameOver = false;
+    setBoardState(true);
+    resetBoard();
+    resetWhoIsWin();
+    player[0].resetCellOccupied();
+    player[1].resetCellOccupied();
+    div.removeChild(nextRoundBtn);
+    div.removeChild(backToHomeBtn);
+}
+
+function exitGame() {
+    gameOver = false;
+    setBoardState(true);
+    exitBoard();
+    exitScore();
+    player.length = 0;
+    div.remove();
 }
 
 function isPlayerWin(player: Player) {
@@ -58,7 +110,7 @@ function isPlayerWin(player: Player) {
         || (co.includes(3) && co.includes(4) && co.includes(5))
         || (co.includes(6) && co.includes(7) && co.includes(8))
         || (co.includes(0) && co.includes(4) && co.includes(8))
-        || (co.includes(2) && co.includes(4) && co.includes(8))
+        || (co.includes(2) && co.includes(4) && co.includes(6))
         || (co.includes(1) && co.includes(4) && co.includes(7))
         || (co.includes(0) && co.includes(3) && co.includes(6))
         || (co.includes(2) && co.includes(5) && co.includes(8));

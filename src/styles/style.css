@@ -43,12 +43,14 @@ button:active {
     transform: scale(0.9);
 }
 
-button.back-btn {
+button.back-btn, 
+.game-over-btn:last-child {
     border: 1px solid hsl(0, 64%, 54%);
     background-color: hsl(0, 64%, 54%);
 }
 
-button.back-btn:hover {
+button.back-btn:hover, 
+.game-over-btn:last-child:hover {
     background-color: white;
     color: black;
 }
@@ -159,6 +161,14 @@ button.back-btn:active {
 
 .score-board-cont {
     padding: 8px 0 18px 0;
+    border: 3px solid #48485e;
+    margin-bottom: 16px;
+    border-radius: 10px;
+}
+
+.ronde {
+    text-align: center;
+    margin-bottom: 16px;
 }
 
 .score-cont {
@@ -168,7 +178,18 @@ button.back-btn:active {
 }
 
 .score-name {
-	margin-bottom: 16px;
-	font-weight: bold;
-	text-transform: uppercase;
+    margin-bottom: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#who-is-win {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.game-over-btn {
+    display: block;
+    width: 100%;
+    margin-top: 16px;
 }

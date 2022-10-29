@@ -7,6 +7,13 @@ const occupiedCell: number[] = []
 type cellOnClick = (index: number) => string | null;
 type boardCallBack = (callBack: boardCallBackArgs) => void;
 
+let disableClick = false;
+
+const cellElls: HTMLElement[] = [];
+
+const boardGame = document.createElement("div");
+boardGame.classList.add("board-game");
+
 interface boardCellArgs {
     callIndex: number,
     size: string,
@@ -23,8 +30,20 @@ interface boardGameArgs {
 interface boardCallBackArgs {
     cellIndex: number,
     playerIndex: number
+
 }
 
+function isCellOccupied(index: number) {
+    return occupiedCell.includes(index);
+}
+
+function switchPlayer() {
+    currPlayer = currPlayer === 0 ? 1 : 0
+}
+
+function appendOccupiedCell(cellindex: number) {
+    occupiedCell.push(cellindex);
+}
 
 function BoardCell(args: boardCellArgs) {
     const div = document.createElement("div");
@@ -33,52 +52,70 @@ function BoardCell(args: boardCellArgs) {
     div.style.width = args.size;
     div.id = `cell-${args.callIndex}`;
     div.addEventListener("click", (e) => {
-        const symbol = args.onClick(args.callIndex);
-        if(symbol !== null) {
-            const target = e.target as HTMLDivElement;
-            target.textContent = symbol;
+        if (!disableClick) {
+            const symbol = args.onClick(args.callIndex);
+            if (symbol !== null) {
+                const target = e.target as HTMLDivElement;
+                target.textContent = symbol;
+            }
         }
     });
     return div;
 }
 
 function doWhenCellClick(index: number, callBack: boardCallBack) {
-    if(!occupiedCell.includes(index)) {
+    if (!isCellOccupied(index)) {
         const tempPlayer = player[currPlayer];
-        occupiedCell.push(index);
+        appendOccupiedCell(index);
         callBack({
             cellIndex: index,
             playerIndex: currPlayer
         });
-        currPlayer = currPlayer === 0 ? 1 : 0;
+        switchPlayer();
         return tempPlayer.symbol;
-    }else {
+    } else {
         return null;
     }
 }
 
+// Export Value
+
 export function isBoardFull() {
     return occupiedCell.length === 9;
+}
+
+export function setBoardState(state: boolean) {
+    disableClick = !state;
+}
+
+export function resetBoard() {
+    occupiedCell.length = 0;
+    currPlayer = 0;
+    cellElls.forEach((el) => {
+        el.textContent = "";
+    });
+}
+
+export function exitBoard() {
+    player.length = 0;
+    currPlayer = 0;
+    occupiedCell.length = 0;
 }
 
 
 export default function Board(args: boardGameArgs) {
     player[0] = args.player1;
     player[1] = args.player2;
-
     currPlayer = 0;
 
-    const boardGame = document.createElement("div");
-    boardGame.classList.add("board-game");
-    const cell: HTMLDivElement[] = [];
     for (let i = 0; i < 9; i++) {
-        cell.push(BoardCell({
+        cellElls.push(BoardCell({
             size: "80px",
             callIndex: i,
             onClick: (index) => doWhenCellClick(index, args.callBack)
         }));
     }
 
-    boardGame.append(...cell);
+    boardGame.append(...cellElls);
     return boardGame;
 }

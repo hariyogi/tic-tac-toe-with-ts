@@ -66,11 +66,12 @@ export function chosseGameMethod (
 
 export function chossePlayerName(
     method: "PLAYER" | "BOT",
-    callBack: (player1: string, player2: string) => void,
+    callBack: (player1: string, player2: string, botLevel: "EASY" | "HARD" | null) => void,
     onBack: () => void
 ) {
     let player1Name = "Player 1";
     let player2Name = "Player 2";
+    let level: "EASY" | "HARD" | null = null;
 
     const container = document.createElement("div");
     container.classList.add("insert-name");
@@ -95,12 +96,17 @@ export function chossePlayerName(
 
     if(method === "PLAYER") {
         container.appendChild(player2);
+    }else {
+        const easyBtn = createButton("Easy", "Easy", () => {
+            level = "EASY";
+        })
+        container.appendChild(easyBtn);
     }
 
     const nextButton = createButton(
         "Lanjut", 
         "lanjut", 
-        () => callBack(player1Name, player2Name)
+        () => callBack(player1Name, player2Name, level)
     );
 
     const backButton = createButton(

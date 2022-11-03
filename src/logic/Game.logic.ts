@@ -1,5 +1,12 @@
 import Player from "../Player";
-import Board, { isBoardFull, setBoardState, resetBoard, highlightCell } from "../view/Board.view";
+import Board, {
+    appendSymbol,
+    setPlayerSymbol,
+    setBoardState,
+    resetBoard,
+    highlightCell,
+} from "../view/Board.view";
+
 import ScoreBoard, {
     changeScore,
     appendRonde,
@@ -9,7 +16,17 @@ import ScoreBoard, {
     exitScore
 } from "../view/Scoreboard.view";
 
+interface initArgs {
+    player1: Player
+    player2: Player
+    botLevel: "EASY" | "HARD" | null
+}
+
 const player: Player[] = [];
+const occupiedCell: number[] = [];
+let currPlayerIndex = 0;
+let againstBot = false;
+let bot: "EASY" | "HARD" | null = null;
 let gameReady = false;
 let gameOver = false;
 
@@ -24,10 +41,14 @@ const backToHomeBtn = document.createElement("button");
 backToHomeBtn.textContent = "Kembali ke Menu Utama"
 backToHomeBtn.classList.add("game-over-btn");
 
-export function initGame(player1: Player, player2: Player) {
+export function initGame({ player1, player2, botLevel }: initArgs) {
     console.log(player);
     player[0] = player1;
     player[1] = player2;
+    if (botLevel != null) {
+        againstBot = true;
+        bot = botLevel;
+    }
     gameReady = true;
 }
 
@@ -41,11 +62,9 @@ export default function BuildGame(backToHome: () => void) {
         player2: player[1]
     });
 
-    const board = Board({
-        player1: player[0],
-        player2: player[1],
-        onCellClick: (args) => handleGame(args.cellIndex, args.playerIndex)
-    });
+    const board = Board((index) =>
+        handleGame(index)
+    );
 
     backToHomeBtn.addEventListener("click", () => {
         exitGame();
@@ -57,16 +76,38 @@ export default function BuildGame(backToHome: () => void) {
 
 }
 
-function handleGame(cellIndex: number, playerIndex: number) {
-    const tempPlayer = player[playerIndex];
+function getUnOccupiedCell() {
+    const unOccCell: number[] = [];
+
+    for (let i = 0; i < 9; i++) {
+        if (!occupiedCell.includes(i)) {
+            unOccCell.push(i);
+        }
+    }
+
+    return unOccCell;
+}
+
+function isBoardFull() {
+    return occupiedCell.length >= 9;
+}
+
+function switchPlayer() {
+    currPlayerIndex = currPlayerIndex === 1 ? 0 : 1;
+    setPlayerSymbol(player[currPlayerIndex].symbol);
+}
+
+function handleGame(cellIndex: number) {
+    occupiedCell.push(cellIndex);
+    const tempPlayer = player[currPlayerIndex];
     tempPlayer.addingCellOccupied(cellIndex);
     const playerWinIndex = isPlayerWin(tempPlayer);
-    console.log(playerWinIndex);
+
     if (playerWinIndex.length !== 0) {
         gameOver = true;
         tempPlayer.score++;
         highlightCell(...playerWinIndex);
-        changeScore(tempPlayer.score, playerIndex);
+        changeScore(tempPlayer.score, currPlayerIndex);
         setWhoisWin(tempPlayer);
     } else if (isBoardFull()) {
         gameOver = true;
@@ -77,7 +118,27 @@ function handleGame(cellIndex: number, playerIndex: number) {
     if (gameOver) {
         showGameOverButton();
         setBoardState(false);
+    } else if (againstBot && currPlayerIndex === 0) {
+        console.log("Easy Bot think...");
+        switchPlayer();
+        easyBotThink();
+    } else {
+        switchPlayer();
     }
+}
+
+function easyBotThink() {
+    const onOccupiedCell = getUnOccupiedCell();
+    console.log(onOccupiedCell);
+    const randomCell = randomSuggestion(onOccupiedCell);
+    appendSymbol(randomCell);
+    handleGame(randomCell);
+}
+
+function randomSuggestion(unOccupiedCell: number[]) {
+    const random = Math.floor(Math.random() * unOccupiedCell.length);
+
+    return unOccupiedCell[random];
 }
 
 function showGameOverButton() {
@@ -93,6 +154,9 @@ function resetGame() {
     resetWhoIsWin();
     player[0].resetCellOccupied();
     player[1].resetCellOccupied();
+    occupiedCell.length = 0;
+    currPlayerIndex = 0;
+    setPlayerSymbol(player[currPlayerIndex].symbol);
     div.removeChild(nextRoundBtn);
     div.removeChild(backToHomeBtn);
 }

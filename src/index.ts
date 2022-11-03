@@ -15,15 +15,19 @@ function setGameMethod() {
 }
 
 function chosePlayerNameEll(method: "PLAYER" | "BOT") {
-    replaceBody(chossePlayerName(method, (p1: string, p2: string) => {
+    replaceBody(chossePlayerName(method, (p1, p2, botLevel) => {
         const player1 = Player(p1, "O");
         const player2 = Player(p2, "X");
-        playingTheGame(player1, player2);
+        playingTheGame(player1, player2, botLevel);
     }, () => setGameMethod()));
 }
 
-function playingTheGame(player1: Player, player2: Player) {
-    initGame(player1, player2);
+function playingTheGame(player1: Player, player2: Player, botLevel: "EASY" | "HARD" | null) {
+    initGame({
+        player1: player1,
+        player2: player2,
+        botLevel: botLevel
+    });
     replaceBody(BuildGame(() => setGameMethod()));
 }
 

@@ -97,10 +97,8 @@ export function chossePlayerName(
     if(method === "PLAYER") {
         container.appendChild(player2);
     }else {
-        const easyBtn = createButton("Easy", "Easy", () => {
-            level = "EASY";
-        })
-        container.appendChild(easyBtn);
+        level = "EASY";
+        player2Name = "Bot Goblok";
     }
 
     const nextButton = createButton(

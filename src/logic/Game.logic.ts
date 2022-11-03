@@ -6,7 +6,6 @@ import Board, {
     resetBoard,
     highlightCell,
 } from "../view/Board.view";
-
 import ScoreBoard, {
     changeScore,
     appendRonde,
@@ -94,24 +93,23 @@ function isBoardFull() {
 
 function switchPlayer() {
     currPlayerIndex = currPlayerIndex === 1 ? 0 : 1;
-    setPlayerSymbol(player[currPlayerIndex].symbol);
+    updateSymbol();
 }
 
 function handleGame(cellIndex: number) {
     occupiedCell.push(cellIndex);
     const tempPlayer = player[currPlayerIndex];
     tempPlayer.addingCellOccupied(cellIndex);
-    const playerWinIndex = isPlayerWin(tempPlayer);
+    const playerWinRow = getWinRow(tempPlayer);
 
-    if (playerWinIndex.length !== 0) {
+    if (playerWinRow.length !== 0) {
         gameOver = true;
         tempPlayer.score++;
-        highlightCell(...playerWinIndex);
+        highlightCell(...playerWinRow);
         changeScore(tempPlayer.score, currPlayerIndex);
         setWhoisWin(tempPlayer);
     } else if (isBoardFull()) {
         gameOver = true;
-        appendRonde();
         setDraw();
     }
 
@@ -119,7 +117,6 @@ function handleGame(cellIndex: number) {
         showGameOverButton();
         setBoardState(false);
     } else if (againstBot && currPlayerIndex === 0) {
-        console.log("Easy Bot think...");
         switchPlayer();
         easyBotThink();
     } else {
@@ -129,7 +126,6 @@ function handleGame(cellIndex: number) {
 
 function easyBotThink() {
     const onOccupiedCell = getUnOccupiedCell();
-    console.log(onOccupiedCell);
     const randomCell = randomSuggestion(onOccupiedCell);
     appendSymbol(randomCell);
     handleGame(randomCell);
@@ -146,19 +142,31 @@ function showGameOverButton() {
     div.appendChild(backToHomeBtn);
 }
 
+function removeGameOverButton() {
+    div.removeChild(nextRoundBtn);
+    div.removeChild(backToHomeBtn);
+}
+
+function resetPlayerOccupiedCell() {
+    player[0].resetCellOccupied();
+    player[1].resetCellOccupied();
+}
+
+function updateSymbol() {
+    setPlayerSymbol(player[currPlayerIndex].symbol);
+}
+
 function resetGame() {
     appendRonde();
     gameOver = false;
     setBoardState(true);
     resetBoard();
     resetWhoIsWin();
-    player[0].resetCellOccupied();
-    player[1].resetCellOccupied();
+    resetPlayerOccupiedCell()
     occupiedCell.length = 0;
     currPlayerIndex = 0;
-    setPlayerSymbol(player[currPlayerIndex].symbol);
-    div.removeChild(nextRoundBtn);
-    div.removeChild(backToHomeBtn);
+    updateSymbol();
+    removeGameOverButton();
 }
 
 function exitGame() {
@@ -167,7 +175,7 @@ function exitGame() {
     player.length = 0;
 }
 
-function isPlayerWin(player: Player) {
+function getWinRow(player: Player) {
     const co = player.cellOccupied;
     if ((co.includes(0) && co.includes(1) && co.includes(2))) {
         return [0, 1, 2];

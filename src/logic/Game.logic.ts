@@ -41,7 +41,7 @@ backToHomeBtn.textContent = "Kembali ke Menu Utama"
 backToHomeBtn.classList.add("game-over-btn");
 
 export function initGame({ player1, player2, botLevel }: initArgs) {
-    console.log(player);
+    resetValue();
     player[0] = player1;
     player[1] = player2;
     if (botLevel != null) {
@@ -66,7 +66,7 @@ export default function BuildGame(backToHome: () => void) {
     );
 
     backToHomeBtn.addEventListener("click", () => {
-        exitGame();
+        resetValue();
         backToHome();
     });
 
@@ -169,10 +169,16 @@ function resetGame() {
     removeGameOverButton();
 }
 
-function exitGame() {
+function resetValue() {
     gameOver = false;
-    exitScore();
     player.length = 0;
+    againstBot = false;
+    bot = null;
+    occupiedCell.length = 0;
+    player.length = 0;
+    currPlayerIndex = 0;
+    gameReady = false;
+    gameOver = false;
 }
 
 function getWinRow(player: Player) {
